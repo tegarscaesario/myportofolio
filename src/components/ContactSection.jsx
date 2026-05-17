@@ -17,20 +17,20 @@ const CONTACT_LINKS = [
     },
     {
         name: 'Instagram',
-        handle: '@tegarscaesario',
-        href: 'https://instagram.com/tegarscaesario',
+        handle: '@tegar.sc10',
+        href: 'https://www.instagram.com/tegar.sc10/',
         icon: 'mdi:instagram',
     },
     {
         name: 'TikTok',
-        handle: '@tegarscaesario',
-        href: 'https://tiktok.com/@tegarscaesario',
+        handle: '@aikoo1007',
+        href: 'https://www.tiktok.com/@aikoo1007',
         icon: 'ic:baseline-tiktok',
     },
     {
         name: 'LinkedIn',
-        handle: 'linkedin.com/in/tegarscaesario',
-        href: 'https://www.linkedin.com/in/tegarscaesario',
+        handle: 'linkedin.com/in/tegar-scaesario',
+        href: 'https://www.linkedin.com/in/tegar-scaesario-7053152a8/',
         icon: 'mdi:linkedin',
     },
 ]
