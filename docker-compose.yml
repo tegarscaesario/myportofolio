@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  portfolio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production        # pakai stage "production" (nginx)
+    container_name: portfolio-web
+    ports:
+      - "3000:80"               # akses lewat http://localhost:3000
+    restart: unless-stopped
+
+  # ── Development server (opsional) ──
+  # Uncomment baris di bawah jika mau jalankan mode dev
+  # portfolio-dev:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.dev
+  #   container_name: portfolio-dev
+  #   ports:
+  #     - "5173:5173"
+  #   volumes:
+  #     - .:/app
+  #     - /app/node_modules
+  #   command: npm run dev
