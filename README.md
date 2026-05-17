@@ -6,15 +6,19 @@ Portofolio web personal yang dibangun dengan React + Vite, menampilkan animasi i
 
 ## ✨ Fitur
 
-- **3D Lanyard Card** — ID card fisika interaktif menggunakan `@react-three/rapier`
+- **3D Lanyard Card** — ID card fisika interaktif menggunakan `@react-three/rapier` (desktop only)
+- **Mobile About Card** — Kartu profil animasi dengan orbiting dot & grayscale reveal (mobile fallback)
 - **TextPressure** — Nama hero yang responsif terhadap gerakan mouse (variable font)
 - **SplashCursor** — Efek fluid WebGL saat kursor bergerak
 - **ScrollReveal** — Teks muncul dengan animasi blur saat di-scroll
+- **ShinyText** — Teks heading dengan efek kilau animasi
 - **LogoLoop** — Marquee skill logo yang berjalan otomatis
 - **ProjectCarousel** — Tampilan proyek dalam bentuk carousel
 - **ContactSection** — Form kontak terintegrasi EmailJS
 - **LoadingScreen** — Layar loading animasi sebelum halaman utama muncul
 - **Glassmorphism Navbar** — Navbar transparan dengan efek blur
+- **TiltCard** — Kartu foto hero dengan efek tilt 3D
+- **SEO Optimized** — Meta tags, sitemap, robots.txt, dan favicon
 
 ---
 
@@ -23,33 +27,40 @@ Portofolio web personal yang dibangun dengan React + Vite, menampilkan animasi i
 ```
 portfolio/
 ├── public/
-│   └── Profile.jpeg          ← Foto profil
+│   ├── Profile.jpeg              ← Foto profil hero
+│   ├── About.jpeg                ← Foto profil about section
+│   ├── Project 1.png … 9.png    ← Screenshot proyek
+│   ├── favicon.svg               ← Favicon
+│   ├── robots.txt                ← SEO robots config
+│   └── sitemap.xml               ← SEO sitemap
 ├── src/
 │   ├── assets/
-│   │   ├── card.glb          ← 3D model kartu untuk Lanyard
-│   │   └── lanyard.png       ← Tekstur tali lanyard
+│   │   ├── card.glb              ← 3D model kartu untuk Lanyard
+│   │   └── lanyard.png           ← Tekstur tali lanyard
 │   ├── components/
-│   │   ├── Background.jsx    ← Animated background (blob + wave)
-│   │   ├── ContactSection.jsx← Form kontak dengan EmailJS
-│   │   ├── Footer.jsx        ← Footer halaman
-│   │   ├── Lanyard.jsx       ← 3D Lanyard card interaktif
-│   │   ├── LoadingScreen.jsx ← Layar loading awal
-│   │   ├── LogoLoop.jsx      ← Marquee logo skill
-│   │   ├── Navbar.jsx        ← Navbar glassmorphism responsif
-│   │   ├── ProjectCarousel.jsx← Carousel proyek
-│   │   ├── ScrollReveal.jsx  ← Animasi teks saat scroll
-│   │   ├── ShinyText.jsx     ← Teks dengan efek kilau
-│   │   ├── SplashCursor.jsx  ← Fluid cursor WebGL
-│   │   ├── TextPressure.jsx  ← Hero name interaktif
-│   │   ├── TiltCard.jsx      ← Kartu foto dengan efek tilt 3D
-│   │   └── WorkHero.jsx      ← Header section Work/Projects
-│   ├── App.jsx               ← Root component + semua section
-│   ├── index.css             ← Global styles + animasi
-│   └── main.jsx              ← Entry point
-├── Dockerfile                ← Multi-stage build: Vite → Nginx
-├── Dockerfile.dev            ← Dev server dengan hot reload
-├── docker-compose.yml        ← Orkestrasi container
-├── nginx.conf                ← Nginx config untuk SPA routing
+│   │   ├── Background.jsx        ← Animated background (blob + wave)
+│   │   ├── ContactSection.jsx    ← Form kontak dengan EmailJS
+│   │   ├── Footer.jsx            ← Footer halaman
+│   │   ├── Lanyard.jsx           ← 3D Lanyard card interaktif (desktop)
+│   │   ├── LoadingScreen.jsx     ← Layar loading awal
+│   │   ├── LogoLoop.jsx          ← Marquee logo skill
+│   │   ├── LogoLoop.css          ← Styles untuk LogoLoop
+│   │   ├── Navbar.jsx            ← Navbar glassmorphism responsif
+│   │   ├── ProjectCarousel.jsx   ← Carousel proyek
+│   │   ├── ScrollReveal.jsx      ← Animasi teks saat scroll
+│   │   ├── ShinyText.jsx         ← Teks dengan efek kilau
+│   │   ├── ShinyText.css         ← Styles untuk ShinyText
+│   │   ├── SplashCursor.jsx      ← Fluid cursor WebGL
+│   │   ├── TextPressure.jsx      ← Hero name interaktif
+│   │   ├── TiltCard.jsx          ← Kartu foto dengan efek tilt 3D
+│   │   └── WorkHero.jsx          ← Header section Work/Projects
+│   ├── App.jsx                   ← Root component + semua section
+│   ├── index.css                 ← Global styles + animasi
+│   └── main.jsx                  ← Entry point
+├── Dockerfile                    ← Multi-stage build: Vite → Nginx
+├── Dockerfile.dev                ← Dev server dengan hot reload
+├── docker-compose.yml            ← Orkestrasi container
+├── nginx.conf                    ← Nginx config untuk SPA routing
 ├── vite.config.js
 ├── tailwind.config.js
 └── package.json
@@ -120,7 +131,7 @@ npm run preview
 ## 🎨 Kustomisasi
 
 ### Ganti foto profil
-Ganti file `public/Profile.jpeg` dengan foto kamu sendiri (nama file harus sama).
+Ganti file `public/Profile.jpeg` (hero) dan `public/About.jpeg` (about section) dengan foto kamu sendiri (nama file harus sama).
 
 ### Ganti nama & deskripsi
 Buka `src/App.jsx`, cari bagian:
@@ -131,7 +142,7 @@ Buka `src/App.jsx`, cari bagian:
 Dan ubah teks `fullText` untuk mengganti deskripsi di hero section.
 
 ### Tambah/ubah proyek
-Buka `src/components/ProjectCarousel.jsx` dan tambahkan proyek baru pada array data.
+Buka `src/components/ProjectCarousel.jsx` dan tambahkan proyek baru pada array data. Screenshot proyek disimpan di `public/` dengan format `Project X.png`.
 
 ### Ubah skill logo
 Di `src/App.jsx`, edit array `skillLogosTop` dan `skillLogosBottom` dengan ikon dan link yang sesuai.
@@ -187,6 +198,14 @@ colors: {
 | **React Icons** | Icon tech stack (SI, FA) |
 | **Nginx** | Production web server (Docker) |
 | **Docker** | Containerization |
+
+---
+
+## 🌍 Deployment
+
+Project ini di-deploy melalui **Vercel** dengan auto-deploy dari branch `main`.
+
+Live: [tegarscaesario10.vercel.app](https://tegarscaesario10.vercel.app)
 
 ---
 
