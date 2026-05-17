@@ -349,14 +349,14 @@ export default function App() {
                   /* Static card — no Three.js download needed */
                   <div className="relative z-50 w-full flex items-center justify-center py-8">
                     <div
-                      className="relative w-[220px] rounded-2xl overflow-hidden border border-white/20 shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
+                      className="group relative w-[220px] rounded-2xl overflow-hidden border border-white/20 shadow-[0_20px_60px_rgba(0,0,0,0.5)] cursor-pointer"
                       style={{ background: '#ffffff' }}
                     >
                       <div className="w-full aspect-[3/4] overflow-hidden">
                         <img
                           src="/About.jpeg"
                           alt="Tegar Scaesario"
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-active:grayscale-0 transition-[filter] duration-700 ease-out"
                           loading="lazy"
                           decoding="async"
                         />
