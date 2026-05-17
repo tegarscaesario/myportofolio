@@ -349,30 +349,26 @@ export default function App() {
                   /* Animated card with photo + grayscale reveal */
                   <div className="relative z-50 w-full flex items-center justify-center py-8">
                     <div className="about-card-outer">
-                      <div className="about-card-dot" />
                       <div className="about-card-inner group">
                         <div className="about-card-ray" />
 
                         {/* Photo */}
-                        <div className="w-[80%] aspect-[3/4] rounded-lg overflow-hidden relative z-[1] my-4">
-                          <img
-                            src="/About.jpeg"
-                            alt="Tegar Scaesario"
-                            className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-active:grayscale-0 transition-[filter] duration-700 ease-out"
-                            loading="lazy"
-                            decoding="async"
-                          />
+                        <div className="about-photo-wrapper">
+                          <div className="about-card-dot" />
+                          <div className="w-full aspect-[3/4] rounded-lg overflow-hidden relative z-[1]">
+                            <img
+                              src="/About.jpeg"
+                              alt="Tegar Scaesario"
+                              className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-active:grayscale-0 transition-[filter] duration-700 ease-out"
+                              loading="lazy"
+                              decoding="async"
+                            />
+                          </div>
                         </div>
 
                         {/* Name */}
                         <p className="text-base font-semibold tracking-wide relative z-[1]">Tegar Scaesario</p>
                         <p className="text-xs text-slate-400 mt-1 mb-4 relative z-[1]">Frontend Developer</p>
-
-                        {/* Grid lines */}
-                        <div className="about-card-line top-l" />
-                        <div className="about-card-line left-l" />
-                        <div className="about-card-line bottom-l" />
-                        <div className="about-card-line right-l" />
                       </div>
                     </div>
                   </div>
