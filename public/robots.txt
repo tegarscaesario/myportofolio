@@ -1,0 +1,8 @@
+# robots.txt — Tegar Scaesario Portfolio
+# Allow all search engines to crawl the entire site
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://tegarscaesario10.vercel.app/sitemap.xml
