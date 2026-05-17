@@ -346,24 +346,33 @@ export default function App() {
             <div className="flex flex-col lg:flex-row items-center lg:items-start gap-16 lg:gap-24">
               <div className="flex-1 w-full max-w-[400px] lg:max-w-[450px]">
                 {isMobile ? (
-                  /* Static card — no Three.js download needed */
+                  /* Animated card with photo + grayscale reveal */
                   <div className="relative z-50 w-full flex items-center justify-center py-8">
-                    <div
-                      className="group relative w-[220px] rounded-2xl overflow-hidden border border-white/20 shadow-[0_20px_60px_rgba(0,0,0,0.5)] cursor-pointer"
-                      style={{ background: '#ffffff' }}
-                    >
-                      <div className="w-full aspect-[3/4] overflow-hidden">
-                        <img
-                          src="/About.jpeg"
-                          alt="Tegar Scaesario"
-                          className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-active:grayscale-0 transition-[filter] duration-700 ease-out"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                      <div className="p-4 text-center" style={{ background: '#1a1a2e' }}>
-                        <p className="text-white font-semibold text-sm">Tegar Scaesario</p>
-                        <p className="text-slate-400 text-xs mt-1">Frontend Developer</p>
+                    <div className="about-card-outer">
+                      <div className="about-card-dot" />
+                      <div className="about-card-inner group">
+                        <div className="about-card-ray" />
+
+                        {/* Photo */}
+                        <div className="w-[80%] aspect-[3/4] rounded-lg overflow-hidden relative z-[1] my-4">
+                          <img
+                            src="/About.jpeg"
+                            alt="Tegar Scaesario"
+                            className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-active:grayscale-0 transition-[filter] duration-700 ease-out"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        </div>
+
+                        {/* Name */}
+                        <p className="text-base font-semibold tracking-wide relative z-[1]">Tegar Scaesario</p>
+                        <p className="text-xs text-slate-400 mt-1 mb-4 relative z-[1]">Frontend Developer</p>
+
+                        {/* Grid lines */}
+                        <div className="about-card-line top-l" />
+                        <div className="about-card-line left-l" />
+                        <div className="about-card-line bottom-l" />
+                        <div className="about-card-line right-l" />
                       </div>
                     </div>
                   </div>
