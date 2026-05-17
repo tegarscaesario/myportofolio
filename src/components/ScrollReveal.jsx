@@ -4,6 +4,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const isMobileDevice = typeof window !== 'undefined' &&
+  (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent));
+
 const ScrollReveal = ({
     children,
     scrollContainerRef,
@@ -16,6 +19,8 @@ const ScrollReveal = ({
     rotationEnd = 'bottom bottom',
     wordAnimationEnd = 'bottom bottom'
 }) => {
+    // Disable blur on mobile — filter: blur() is extremely GPU-intensive
+    const effectiveBlur = enableBlur && !isMobileDevice;
     const containerRef = useRef(null);
 
     const splitText = useMemo(() => {
@@ -59,7 +64,7 @@ const ScrollReveal = ({
 
         gsap.fromTo(
             wordElements,
-            { opacity: baseOpacity, willChange: 'opacity' },
+            { opacity: baseOpacity, willChange: 'opacity, filter', transform: 'translateZ(0)' },
             {
                 ease: 'none',
                 opacity: 1,
@@ -74,7 +79,7 @@ const ScrollReveal = ({
             }
         );
 
-        if (enableBlur) {
+        if (effectiveBlur) {
             gsap.fromTo(
                 wordElements,
                 { filter: `blur(${blurStrength}px)` },
@@ -93,10 +98,13 @@ const ScrollReveal = ({
             );
         }
 
+        // Only kill triggers created by this component instance
         return () => {
-            ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+            ScrollTrigger.getAll()
+                .filter(t => t.trigger === el)
+                .forEach(t => t.kill());
         };
-    }, [scrollContainerRef, enableBlur, baseRotation, baseOpacity, rotationEnd, wordAnimationEnd, blurStrength]);
+    }, [scrollContainerRef, effectiveBlur, baseRotation, baseOpacity, rotationEnd, wordAnimationEnd, blurStrength]);
 
     return (
         <div ref={containerRef} className={`my-5 ${containerClassName}`}>

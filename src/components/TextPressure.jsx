@@ -128,8 +128,19 @@ const TextPressure = ({
   }, [setSize]);
 
   useEffect(() => {
+    const isMobileUA = typeof window !== 'undefined' &&
+      (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent));
+
     let rafId;
+    let frameCount = 0;
+    // Mobile: skip 3 of 4 frames (~15fps). Desktop: skip 1 of 2 (~30fps)
+    const skipRate = isMobileUA ? 4 : 2;
+
     const animate = () => {
+      rafId = requestAnimationFrame(animate);
+      frameCount++;
+      if (frameCount % skipRate !== 0) return;
+
       mouseRef.current.x += (cursorRef.current.x - mouseRef.current.x) / 15;
       mouseRef.current.y += (cursorRef.current.y - mouseRef.current.y) / 15;
 
@@ -137,16 +148,21 @@ const TextPressure = ({
         const titleRect = titleRef.current.getBoundingClientRect();
         const maxDist = titleRect.width / 2;
 
-        spansRef.current.forEach(span => {
-          if (!span) return;
-
+        // Batch DOM reads first to avoid layout thrashing
+        const spanData = spansRef.current.map(span => {
+          if (!span) return null;
           const rect = span.getBoundingClientRect();
-          const charCenter = {
-            x: rect.x + rect.width / 2,
-            y: rect.y + rect.height / 2
+          return {
+            span,
+            cx: rect.x + rect.width / 2,
+            cy: rect.y + rect.height / 2
           };
+        });
 
-          const d = dist(mouseRef.current, charCenter);
+        // Then batch DOM writes
+        spanData.forEach(data => {
+          if (!data) return;
+          const d = dist(mouseRef.current, { x: data.cx, y: data.cy });
 
           const wdth = width ? Math.floor(getAttr(d, maxDist, 5, 200)) : 100;
           const wght = weight ? Math.floor(getAttr(d, maxDist, 100, 900)) : 400;
@@ -155,16 +171,14 @@ const TextPressure = ({
 
           const newFontVariationSettings = `'wght' ${wght}, 'wdth' ${wdth}, 'ital' ${italVal}`;
 
-          if (span.style.fontVariationSettings !== newFontVariationSettings) {
-            span.style.fontVariationSettings = newFontVariationSettings;
+          if (data.span.style.fontVariationSettings !== newFontVariationSettings) {
+            data.span.style.fontVariationSettings = newFontVariationSettings;
           }
-          if (alpha && span.style.opacity !== alphaVal) {
-            span.style.opacity = alphaVal;
+          if (alpha && data.span.style.opacity !== alphaVal) {
+            data.span.style.opacity = alphaVal;
           }
         });
       }
-
-      rafId = requestAnimationFrame(animate);
     };
 
     animate();

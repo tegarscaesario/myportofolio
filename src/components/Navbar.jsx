@@ -40,24 +40,30 @@ export default function Navbar() {
   const [activeSection, setActiveSection] = useState('home')
 
   useEffect(() => {
+    let ticking = false;
     const onScroll = () => {
-      setScrolled(window.scrollY > 20)
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        setScrolled(window.scrollY > 20)
 
-      // Detect active section based on scroll position
-      const sections = ['home', 'about', 'work', 'contact']
-      for (const section of sections) {
-        const element = document.querySelector(`#${section}`)
-        if (element) {
-          const rect = element.getBoundingClientRect()
-          if (rect.top <= 100 && rect.bottom >= 100) {
-            setActiveSection(section)
-            break
+        // Detect active section based on scroll position
+        const sections = ['home', 'about', 'work', 'contact']
+        for (const section of sections) {
+          const element = document.querySelector(`#${section}`)
+          if (element) {
+            const rect = element.getBoundingClientRect()
+            if (rect.top <= 100 && rect.bottom >= 100) {
+              setActiveSection(section)
+              break
+            }
           }
         }
-      }
+        ticking = false;
+      });
     }
 
-    window.addEventListener('scroll', onScroll)
+    window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 

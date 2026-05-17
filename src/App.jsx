@@ -1,18 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, lazy, Suspense } from 'react'
 import Background from './components/Background'
 import Navbar from './components/Navbar'
 import TiltCard from './components/TiltCard'
-import Lanyard from './components/Lanyard'
 import TextPressure from './components/TextPressure'
 import ShinyText from './components/ShinyText'
 import LogoLoop from './components/LogoLoop'
 import SplashCursor from './components/SplashCursor'
-import Footer from './components/Footer'
 import ScrollReveal from './components/ScrollReveal'
-import ProjectCarousel from './components/ProjectCarousel'
-import WorkHero from './components/WorkHero'
 import LoadingScreen from './components/LoadingScreen'
-import ContactSection from './components/ContactSection'
+
+// Only lazy-load Lanyard (Three.js + Rapier = ~3.2MB) on desktop
+const _isMobileInit = typeof window !== 'undefined' &&
+  (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent));
+const Lanyard = _isMobileInit ? null : lazy(() => import('./components/Lanyard'))
+const ProjectCarousel = lazy(() => import('./components/ProjectCarousel'))
+const WorkHero = lazy(() => import('./components/WorkHero'))
+const ContactSection = lazy(() => import('./components/ContactSection'))
+const Footer = lazy(() => import('./components/Footer'))
 
 import {
   SiHtml5,
@@ -73,13 +77,19 @@ function HeroName({ children }) {
 }
 
 export default function App() {
-  const [scrollY, setScrollY] = useState(0);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [loading, setLoading] = useState(true);
   const [displayedText, setDisplayedText] = useState('');
   // true  = Compressa VF sudah fully loaded, safe untuk render TextPressure
   // false = tampilkan fallback placeholder
   const [fontLoaded, setFontLoaded] = useState(false);
+
+  // Use ref for scroll-driven animations to avoid re-rendering the entire tree
+  const progressBarRef = useRef(null);
+  const isMobile = useRef(
+    typeof window !== 'undefined' &&
+    (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent))
+  ).current;
 
   const fullText =
     "Passionate Front-End Web Developer dedicated to bringing designs to life through clean and interactive code. Let's connect and build something awesome together!";
@@ -130,9 +140,19 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setScrollY(window.scrollY);
-      setShowScrollTop(window.scrollY > 300);
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const sy = window.scrollY;
+        // Update progress bar directly via DOM — no React re-render needed
+        if (progressBarRef.current) {
+          progressBarRef.current.style.width = `${Math.max(0, Math.min(100, (sy - 200) * 0.15))}%`;
+        }
+        setShowScrollTop(sy > 300);
+        ticking = false;
+      });
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -182,7 +202,7 @@ export default function App() {
                 {fontLoaded ? (
                   /* Font berhasil — pakai TextPressure interaktif */
                   <>
-                    <div style={{ position: 'relative', height: '140px', overflow: 'visible' }}>
+                    <div style={{ position: 'relative', height: 'clamp(80px, 18vw, 140px)', overflow: 'visible' }}>
                       <TextPressure
                         text="Tegar"
                         flex={true}
@@ -197,7 +217,7 @@ export default function App() {
                         scale={true}
                       />
                     </div>
-                    <div style={{ position: 'relative', height: '140px', overflow: 'visible' }}>
+                    <div style={{ position: 'relative', height: 'clamp(80px, 18vw, 140px)', overflow: 'visible' }}>
                       <TextPressure
                         text="Scaesario"
                         flex={true}
@@ -290,20 +310,22 @@ export default function App() {
                   src="/Profile.jpeg"
                   alt="Profile"
                   className="w-full h-full object-cover opacity-90 transition-all duration-700 ease-out pointer-events-none"
+                  loading="eager"
+                  decoding="async"
                 />
-                <div className="absolute bottom-4 left-4 right-4 rounded-[20px] bg-[#000000]/60 backdrop-blur-md border border-[#e5e7eb]/10 p-4 flex items-center gap-4 transition-transform duration-300 pointer-events-none">
-                  <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#ffffff] flex-shrink-0 pointer-events-auto">
-                    <img src="/Profile.jpeg" alt="Avatar" className="w-full h-full object-cover" />
+                <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 rounded-[20px] bg-[#000000]/60 backdrop-blur-md border border-[#e5e7eb]/10 p-3 sm:p-4 flex items-center gap-3 sm:gap-4 transition-transform duration-300 pointer-events-none">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-[#ffffff] flex-shrink-0 pointer-events-auto">
+                    <img src="/Profile.jpeg" alt="Avatar" className="w-full h-full object-cover" loading="eager" decoding="async" />
                   </div>
-                  <div className="flex flex-col flex-1 text-left pointer-events-auto">
-                    <h3 className="text-[#ffffff] font-medium text-base font-outfit truncate">Tegar Scaesario</h3>
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-[#ffffff] animate-pulse"></span>
-                      <span className="text-[#9ca3af] text-xs font-outfit">Frontend Developer</span>
+                  <div className="flex flex-col flex-1 min-w-0 text-left pointer-events-auto">
+                    <h3 className="text-[#ffffff] font-medium text-sm sm:text-base font-outfit truncate">Tegar Scaesario</h3>
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <span className="w-2 h-2 rounded-full bg-[#ffffff] animate-pulse flex-shrink-0"></span>
+                      <span className="text-[#9ca3af] text-[10px] sm:text-xs font-outfit">Frontend Developer</span>
                     </div>
                   </div>
                   <a href="#contact"
-                    className="btn-contact-me flex-shrink-0 cursor-pointer pointer-events-auto relative z-30">
+                    className="btn-contact-me flex-shrink-0 cursor-pointer pointer-events-auto relative z-30 text-[11px] sm:text-[13px] px-2.5 sm:px-[1.2em]">
                     Contact me
                   </a>
                 </div>
@@ -315,14 +337,41 @@ export default function App() {
           <section id="about" className="relative min-h-screen px-6 lg:px-12 py-24 z-10 mt-12">
             <div className="w-full h-[1px] bg-white/10 mb-16 relative">
               <div
-                className="absolute top-0 left-0 h-full bg-white transition-all duration-100 ease-out"
-                style={{ width: `${Math.max(0, Math.min(100, (scrollY - 200) * 0.15))}%` }}
+                ref={progressBarRef}
+                className="absolute top-0 left-0 h-full bg-white will-change-[width]"
+                style={{ width: '0%', transition: 'none' }}
               />
             </div>
 
             <div className="flex flex-col lg:flex-row items-center lg:items-start gap-16 lg:gap-24">
               <div className="flex-1 w-full max-w-[400px] lg:max-w-[450px]">
-                <Lanyard />
+                {isMobile ? (
+                  /* Static card — no Three.js download needed */
+                  <div className="relative z-50 w-full flex items-center justify-center py-8">
+                    <div
+                      className="relative w-[220px] rounded-2xl overflow-hidden border border-white/20 shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
+                      style={{ background: '#ffffff' }}
+                    >
+                      <div className="w-full aspect-[3/4] overflow-hidden">
+                        <img
+                          src="/About.jpeg"
+                          alt="Tegar Scaesario"
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </div>
+                      <div className="p-4 text-center" style={{ background: '#1a1a2e' }}>
+                        <p className="text-white font-semibold text-sm">Tegar Scaesario</p>
+                        <p className="text-slate-400 text-xs mt-1">Frontend Developer</p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <Suspense fallback={<div className="w-full h-[600px]" />}>
+                    <Lanyard />
+                  </Suspense>
+                )}
               </div>
               <div className="flex-1 w-full flex flex-col items-start text-left pt-4 lg:pt-10">
                 <h2 className="text-4xl md:text-5xl lg:text-6xl font-sans font-bold tracking-tighter uppercase mb-8">
@@ -349,11 +398,11 @@ export default function App() {
                   </ScrollReveal>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-12 w-full">
-                  <div className="rounded-3xl bg-white/10 border border-white/15 p-6 backdrop-blur-xl shadow-[0_20px_60px_rgba(15,23,42,0.35)]">
+                  <div className={`rounded-3xl bg-white/10 border border-white/15 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.35)] ${isMobile ? '' : 'backdrop-blur-xl'}`}>
                     <p className="text-5xl sm:text-6xl font-bold tracking-tight text-sky-400">2+</p>
                     <p className="mt-3 text-sm uppercase tracking-[0.3em] text-slate-300">Tahun Pengalaman</p>
                   </div>
-                  <div className="rounded-3xl bg-white/10 border border-white/15 p-6 backdrop-blur-xl shadow-[0_20px_60px_rgba(15,23,42,0.35)]">
+                  <div className={`rounded-3xl bg-white/10 border border-white/15 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.35)] ${isMobile ? '' : 'backdrop-blur-xl'}`}>
                     <p className="text-5xl sm:text-6xl font-bold tracking-tight text-sky-400">30+</p>
                     <p className="mt-3 text-sm uppercase tracking-[0.3em] text-slate-300">Proyek Selesai</p>
                   </div>
@@ -364,10 +413,10 @@ export default function App() {
 
           <section id="skills" className="px-6 lg:px-12 py-20 z-10">
             <div className="max-w-6xl mx-auto">
-              <div className="rounded-[40px] bg-white/5 p-6 backdrop-blur-xl shadow-[0_30px_90px_rgba(15,23,42,0.35)] mb-6 overflow-hidden">
+              <div className={`rounded-[40px] bg-white/5 p-6 shadow-[0_30px_90px_rgba(15,23,42,0.35)] mb-6 overflow-hidden ${isMobile ? '' : 'backdrop-blur-xl'}`}>
                 <LogoLoop logos={skillLogosTop} speed={80} direction="left" logoHeight={60} gap={44} hoverSpeed={0} scaleOnHover fadeOut fadeOutColor="rgba(255,255,255,0.12)" ariaLabel="Top skill logos" />
               </div>
-              <div className="rounded-[40px] bg-white/5 p-6 backdrop-blur-xl shadow-[0_30px_90px_rgba(15,23,42,0.35)] overflow-hidden">
+              <div className={`rounded-[40px] bg-white/5 p-6 shadow-[0_30px_90px_rgba(15,23,42,0.35)] overflow-hidden ${isMobile ? '' : 'backdrop-blur-xl'}`}>
                 <LogoLoop logos={skillLogosBottom} speed={80} direction="right" logoHeight={60} gap={44} hoverSpeed={0} scaleOnHover fadeOut fadeOutColor="rgba(255,255,255,0.12)" ariaLabel="Bottom skill logos" />
               </div>
             </div>
@@ -377,21 +426,29 @@ export default function App() {
             <div className="w-full h-[1px] bg-white/10" />
 
             {/* PORTFOLIO title + tape */}
-            <WorkHero />
+            <Suspense fallback={<div className="py-20" />}>
+              <WorkHero />
+            </Suspense>
 
             {/* Carousel */}
             <div className="px-6 lg:px-12 pb-24 max-w-6xl mx-auto">
               <p className="text-xs text-[#D6BFA3] tracking-[0.4em] font-mono mb-8 text-center"></p>
-              <ProjectCarousel />
+              <Suspense fallback={<div className="h-[400px]" />}>
+                <ProjectCarousel />
+              </Suspense>
             </div>
           </section>
 
-          <ContactSection />
+          <Suspense fallback={null}>
+            <ContactSection />
+          </Suspense>
 
         </div>
 
         {/* ── Footer ── */}
-        <Footer />
+        <Suspense fallback={null}>
+          <Footer />
+        </Suspense>
 
         {/* ── Scroll to Top Button ── */}
         <div className={`fixed bottom-6 right-6 z-50 flex justify-end transition-all duration-300 ${showScrollTop ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'

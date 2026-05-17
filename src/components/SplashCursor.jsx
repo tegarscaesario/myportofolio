@@ -1,14 +1,14 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 function SplashCursor({
-  SIM_RESOLUTION = 128,
-  DYE_RESOLUTION = 1440,
+  SIM_RESOLUTION = 64,
+  DYE_RESOLUTION = 1024,
   CAPTURE_RESOLUTION = 512,
   DENSITY_DISSIPATION = 3.5,
   VELOCITY_DISSIPATION = 2,
   PRESSURE = 0.1,
-  PRESSURE_ITERATIONS = 20,
+  PRESSURE_ITERATIONS = 12,
   CURL = 3,
   SPLAT_RADIUS = 0.2,
   SPLAT_FORCE = 6000,
@@ -19,6 +19,12 @@ function SplashCursor({
   RAINBOW_MODE = false,
   COLOR = '#A855F7'
 }) {
+  // Disable on mobile — too GPU-intensive
+  const [isMobile] = useState(() =>
+    typeof window !== 'undefined' && (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent))
+  );
+
+  if (isMobile) return null;
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -567,14 +573,18 @@ function SplashCursor({
     let colorUpdateTimer = 0.0;
     let animFrameId;
 
+    // Throttle to ~30fps for performance
+    let frameSkip = false;
     function updateFrame() {
+      animFrameId = requestAnimationFrame(updateFrame);
+      frameSkip = !frameSkip;
+      if (frameSkip) return; // skip every other frame → ~30fps
       const dt = calcDeltaTime();
       if (resizeCanvas()) initFramebuffers();
       updateColors(dt);
       applyInputs();
       step(dt);
       render(null);
-      animFrameId = requestAnimationFrame(updateFrame);
     }
 
     function calcDeltaTime() {
@@ -804,7 +814,8 @@ function SplashCursor({
     }
 
     function scaleByPixelRatio(input) {
-      return Math.floor(input * (window.devicePixelRatio || 1));
+      // Cap pixel ratio to 1 for performance
+      return Math.floor(input * 1);
     }
 
     function hashCode(s) {

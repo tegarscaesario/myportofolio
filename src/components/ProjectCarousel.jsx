@@ -108,6 +108,8 @@ export default function ProjectCarousel() {
                                             alt={project.title}
                                             className="w-full h-full object-cover"
                                             draggable={false}
+                                            loading="lazy"
+                                            decoding="async"
                                         />
                                         {/* Overlay on hover for active */}
                                         {isActive && (

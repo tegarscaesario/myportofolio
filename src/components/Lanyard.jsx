@@ -24,31 +24,65 @@ import lanyard from '../assets/lanyard.png';
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 
+// Static fallback card for mobile — avoids loading Three.js + Rapier physics
+function MobileLanyardCard() {
+  return (
+    <div className="relative z-50 w-full flex items-center justify-center py-8 pointer-events-none">
+      <div
+        className="relative w-[220px] rounded-2xl overflow-hidden border border-white/20 shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
+        style={{ background: '#ffffff' }}
+      >
+        {/* Lanyard strap */}
+        <div
+          className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full w-[2px] h-[60px]"
+          style={{ background: 'linear-gradient(to bottom, transparent, #888)' }}
+        />
+        {/* Clip */}
+        <div
+          className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-3 rounded-sm"
+          style={{ background: '#c0c0c0', border: '1px solid #aaa' }}
+        />
+        {/* Profile image */}
+        <div className="w-full aspect-[3/4] overflow-hidden">
+          <img
+            src="/About.jpeg"
+            alt="Tegar Scaesario"
+            className="w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        {/* Info section */}
+        <div className="p-4 text-center" style={{ background: '#1a1a2e' }}>
+          <p className="text-white font-semibold text-sm">Tegar Scaesario</p>
+          <p className="text-slate-400 text-xs mt-1">Frontend Developer</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Lanyard({
   position = [0, 0, 13],
   gravity = [0, -40, 0],
   fov = 25,
   transparent = true,
 }) {
-  const [isMobile, setIsMobile] = useState(
+  const [isMobile] = useState(
     () =>
       typeof window !== 'undefined' &&
-      window.innerWidth < 768
+      (window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent))
   );
 
-  useEffect(() => {
-    const handleResize = () =>
-      setIsMobile(window.innerWidth < 768);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  // On mobile, render a lightweight static card instead of the 3D scene
+  if (isMobile) return <MobileLanyardCard />;
 
   return (
     <div className="relative z-50 w-full h-[600px] pointer-events-none">
       <div className="absolute top-[20px] left-1/2 -translate-x-1/2 w-[200%] h-[110%] pointer-events-auto">
         <Canvas
           camera={{ position, fov }}
-          dpr={[1, isMobile ? 1.5 : 2]}
+          dpr={[1, 1.5]}
           gl={{ alpha: transparent }}
           onCreated={({ gl }) =>
             gl.setClearColor(
@@ -59,8 +93,8 @@ export default function Lanyard({
         >
           <ambientLight intensity={Math.PI} />
 
-          <Physics gravity={gravity} timeStep={isMobile ? 1 / 30 : 1 / 60}>
-            <Band isMobile={isMobile} />
+          <Physics gravity={gravity} timeStep={1 / 60}>
+            <Band isMobile={false} />
           </Physics>
 
           <Environment blur={0.75}>
@@ -226,7 +260,7 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false }) {
       curve.points[2].copy(j1.current.lerped);
       curve.points[3].copy(fixed.current.translation());
 
-      band.current.geometry.setPoints(curve.getPoints(isMobile ? 16 : 32));
+      band.current.geometry.setPoints(curve.getPoints(isMobile ? 12 : 24));
 
       ang.copy(card.current.angvel());
       rot.copy(card.current.rotation());
@@ -290,8 +324,7 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false }) {
                 color="#ffffff"
                 roughness={0.3}
                 metalness={0.5}
-                clearcoat={isMobile ? 0 : 1}
-                clearcoatRoughness={0.15}
+                clearcoat={0}
                 side={THREE.FrontSide}
               />
             </mesh>
@@ -302,8 +335,7 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false }) {
                 color="#1a1a2e"
                 roughness={0.4}
                 metalness={0.6}
-                clearcoat={1}
-                clearcoatRoughness={0.15}
+                clearcoat={0}
                 side={THREE.BackSide}
               />
             </mesh>
