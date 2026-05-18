@@ -59,21 +59,25 @@ export default function WorkHero() {
             >
                 {/* Duplicate text for seamless loop */}
                 <div className="work-tape-track flex whitespace-nowrap">
-                    {[0, 1].map(n => (
-                        <span
-                            key={n}
-                            className="work-tape-text inline-block"
-                            style={{
-                                fontFamily: "'Syncopate', 'Inter', sans-serif",
-                                fontSize: 'clamp(0.85rem, 1.8vw, 1.4rem)',
-                                fontWeight: 800,
-                                color: '#000',
-                                letterSpacing: '0.05em',
-                                paddingRight: '2rem',
-                            }}
-                        >
-                            {TAPE_TEXT}
-                        </span>
+                    {[0, 1].map(block => (
+                        <div key={block} className="flex shrink-0">
+                            {[...Array(10)].map((_, i) => (
+                                <span
+                                    key={i}
+                                    className="work-tape-text inline-block"
+                                    style={{
+                                        fontFamily: "'Syncopate', 'Inter', sans-serif",
+                                        fontSize: 'clamp(0.85rem, 1.8vw, 1.4rem)',
+                                        fontWeight: 800,
+                                        color: '#000',
+                                        letterSpacing: '0.05em',
+                                        paddingRight: '2rem',
+                                    }}
+                                >
+                                    {TAPE_TEXT}
+                                </span>
+                            ))}
+                        </div>
                     ))}
                 </div>
             </div>
@@ -83,7 +87,7 @@ export default function WorkHero() {
         @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@700&display=swap');
 
         .work-tape-track {
-          animation: workTapeScroll 18s linear infinite;
+          animation: workTapeScroll 40s linear infinite;
         }
         @keyframes workTapeScroll {
           from { transform: translateX(0); }
