@@ -5,48 +5,63 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 const PROJECTS = [
     {
         src: '/Project%201.png',
-        title: 'Website Produksi BOX',
-        tech: 'WordPress · PHP · Photoshop',
+        title: 'BOX Production Website',
+        description: 'A company profile website for a video production house showcasing creative works.',
+        tech: 'WordPress · Photoshop',
     },
     {
         src: '/Project%202.png',
-        title: 'Website FNB - Catering',
-        tech: 'WordPress · PHP · Photoshop',
+        title: 'FNB - Catering Website',
+        description: 'A professional business website featuring culinary service offerings and menus.',
+        tech: 'WordPress · Photoshop',
     },
     {
         src: '/Project%203.png',
-        title: 'Website Rent Car',
-        tech: 'WordPress · PHP · Photoshop',
+        title: 'Rent Car Website',
+        description: 'A sleek, highly responsive landing page tailored for booking vehicle rentals.',
+        tech: 'WordPress · Photoshop',
     },
     {
         src: '/Project%204.png',
-        title: 'Design UI/UX Jasa Top Up Game',
-        tech: 'Figma · Canva',
+        title: 'Beauty Care Website',
+        description: 'An elegant and modern landing page promoting beauty treatments and salon clinics.',
+        tech: 'WordPress · Photoshop',
     },
     {
         src: '/Project%205.png',
-        title: 'Design UI/UX Sistem Perpustakaan',
+        title: 'Library System UI/UX Design',
+        description: 'A clean, user-centric mobile UI design crafted for library system management.',
         tech: 'Figma',
     },
     {
         src: '/Project%206.png',
-        title: 'Sistem Klinik OS',
-        tech: 'CodeIgniter 4 · Docker · Tailwind CSS',
+        title: 'Top Up Game UI/UX Design',
+        description: 'An engaging web UI design optimized for game credit and voucher transactions.',
+        tech: 'Figma · Canva',
     },
     {
         src: '/Project%207.png',
-        title: 'Machine Learning - Prediksi Data Obesitas',
-        tech: 'Python · Pandas · NumPy · Scikit-learn',
+        title: 'UI/UX Design of Learning System',
+        description: 'An intuitive dashboard layout designed to streamline online school learning systems.',
+        tech: 'Figma',
     },
     {
         src: '/Project%208.png',
-        title: 'Gambar Topologi Jaringan',
-        tech: 'Cisco Packet Tracer',
+        title: 'Clinic Management System',
+        description: 'A robust web application to manage electronic medical records and appointments.',
+        tech: 'CodeIgniter 4 · Docker · Tailwind CSS',
     },
     {
         src: '/Project%209.png',
-        title: 'Design Spanduk Event',
-        tech: 'Canva',
+        title: 'Machine Learning - Adult Income',
+        description: 'A predictive model designed to analyze census data and classify income levels.',
+        tech: 'Python · Scikit-learn · NumPy',
+    },
+    {
+        src: '/Project%2010.png',
+        title: 'Machine Learning - Obesity',
+        description: 'An intelligent classification model analyzing habits to assess obesity risks.',
+        tech: 'Python · Scikit-learn · NumPy',
     },
 ]
 
@@ -129,6 +144,9 @@ export default function ProjectCarousel() {
                                             <h3 className="text-white font-semibold text-base mb-1 truncate">
                                                 {project.title}
                                             </h3>
+                                            <p className="text-white/60 text-xs mb-2 line-clamp-2">
+                                                {project.description}
+                                            </p>
                                             <p className="text-white/50 text-xs font-mono tracking-wide">
                                                 {project.tech}
                                             </p>

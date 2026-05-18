@@ -44,12 +44,10 @@ portfolio/
 │   │   ├── Lanyard.jsx           ← 3D Lanyard card interaktif (desktop)
 │   │   ├── LoadingScreen.jsx     ← Layar loading awal
 │   │   ├── LogoLoop.jsx          ← Marquee logo skill
-│   │   ├── LogoLoop.css          ← Styles untuk LogoLoop
 │   │   ├── Navbar.jsx            ← Navbar glassmorphism responsif
 │   │   ├── ProjectCarousel.jsx   ← Carousel proyek
 │   │   ├── ScrollReveal.jsx      ← Animasi teks saat scroll
 │   │   ├── ShinyText.jsx         ← Teks dengan efek kilau
-│   │   ├── ShinyText.css         ← Styles untuk ShinyText
 │   │   ├── SplashCursor.jsx      ← Fluid cursor WebGL
 │   │   ├── TextPressure.jsx      ← Hero name interaktif
 │   │   ├── TiltCard.jsx          ← Kartu foto dengan efek tilt 3D
@@ -142,7 +140,7 @@ Buka `src/App.jsx`, cari bagian:
 Dan ubah teks `fullText` untuk mengganti deskripsi di hero section.
 
 ### Tambah/ubah proyek
-Buka `src/components/ProjectCarousel.jsx` dan tambahkan proyek baru pada array data. Screenshot proyek disimpan di `public/` dengan format `Project X.png`.
+Buka `src/components/ProjectCarousel.jsx` dan tambahkan proyek baru pada array data (pastikan menyertakan field `src`, `title`, `description`, dan `tech`). Screenshot proyek disimpan di `public/` dengan format `Project X.png`.
 
 ### Ubah skill logo
 Di `src/App.jsx`, edit array `skillLogosTop` dan `skillLogosBottom` dengan ikon dan link yang sesuai.
