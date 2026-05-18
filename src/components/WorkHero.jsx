@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 
 const TAPE_TEXT =
-    'Project Wordpress ✦ CodeIgniter 4 ✦ Tailwind ✦ Machine Learning ✦ Jaringan Cisco Packet Tracer ✦ Design Figma ✦ Design Canva ✦ '
+    'Some Featured Projects'
 
 export default function WorkHero() {
     const titleRef = useRef(null)

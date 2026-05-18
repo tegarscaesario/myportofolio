@@ -31,7 +31,7 @@ const PROJECTS = [
     {
         src: '/Project%206.png',
         title: 'Sistem Klinik OS',
-        tech: 'CodeIgniter 4 · MySQL · Docker · Tailwind CSS',
+        tech: 'CodeIgniter 4 · Docker · Tailwind CSS',
     },
     {
         src: '/Project%207.png',

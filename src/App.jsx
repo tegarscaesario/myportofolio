@@ -456,7 +456,7 @@ export default function App() {
         </Suspense>
 
         {/* ── Scroll to Top Button ── */}
-        <div className={`fixed bottom-6 right-6 z-50 flex justify-end transition-all duration-300 ${showScrollTop ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        <div className={`fixed bottom-16 sm:bottom-6 right-6 z-50 flex justify-end transition-all duration-300 ${showScrollTop ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
           }`}>
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
